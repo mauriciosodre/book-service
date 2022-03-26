@@ -32,7 +32,7 @@ public class BookController {
             .orElseThrow(() -> new RuntimeException("Currency not found"));
 
     book.setPrice(cambio.getConvertedValue());
-    book.setEnvironment(port);
+    book.setEnvironment("Book port: " + port + " Cambio port: " + cambio.getEnvironment());
 
     return book;
   }
