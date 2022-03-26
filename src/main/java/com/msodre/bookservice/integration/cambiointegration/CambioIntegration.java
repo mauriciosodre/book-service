@@ -1,24 +1,19 @@
 package com.msodre.bookservice.integration.cambiointegration;
 
 import com.msodre.bookservice.integration.cambiointegration.model.Cambio;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.Optional;
 
-@Service
-public class CambioIntegration {
-  private static final String URL = "http://localhost:8000/cambio-service";
-  private static final String ENDPOINT = "/{amount}/{from}/{to}";
+@FeignClient(name = "cambio-service", url = "localhost:8000")
+public interface CambioIntegration {
 
-  public Optional<Cambio> getCambio(BigDecimal amount, String from, String to) {
-    var params = new HashMap<String, String>();
-    params.put("amount", amount.toString());
-    params.put("from", from);
-    params.put("to", to);
-    return Optional.ofNullable(
-        new RestTemplate().getForEntity(URL.concat(ENDPOINT), Cambio.class, params).getBody());
-  }
+  @GetMapping("/cambio-service/{amount}/{from}/{to}")
+  Optional<Cambio> getCambio(
+      @PathVariable BigDecimal amount,
+      @PathVariable String from,
+      @PathVariable String to);
 }
